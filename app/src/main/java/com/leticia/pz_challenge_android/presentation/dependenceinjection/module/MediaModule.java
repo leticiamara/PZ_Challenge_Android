@@ -2,7 +2,7 @@ package com.leticia.pz_challenge_android.presentation.dependenceinjection.module
 
 import com.leticia.pz_challenge_android.domain.repository.IAssetsRepository;
 import com.leticia.pz_challenge_android.infrastucture.repository.AssetsRepository;
-import com.leticia.pz_challenge_android.presentation.mvpView.MediaMvpView;
+import com.leticia.pz_challenge_android.presentation.mvpView.IMediaMvpView;
 import com.leticia.pz_challenge_android.presentation.presenter.IMediaPresenter;
 import com.leticia.pz_challenge_android.presentation.presenter.MediaPresenter;
 
@@ -15,9 +15,9 @@ import dagger.Provides;
 @Module
 public class MediaModule {
 
-    private MediaMvpView mediaMvpView;
+    private IMediaMvpView mediaMvpView;
 
-    public MediaModule(MediaMvpView mediaMvpView) {
+    public MediaModule(IMediaMvpView mediaMvpView) {
         this.mediaMvpView = mediaMvpView;
     }
 

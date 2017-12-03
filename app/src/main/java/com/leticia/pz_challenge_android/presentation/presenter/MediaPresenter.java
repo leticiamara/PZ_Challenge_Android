@@ -1,7 +1,10 @@
 package com.leticia.pz_challenge_android.presentation.presenter;
 
+import com.leticia.pz_challenge_android.domain.model.Assets;
+import com.leticia.pz_challenge_android.domain.model.MediaItem;
 import com.leticia.pz_challenge_android.domain.repository.IAssetsRepository;
-import com.leticia.pz_challenge_android.presentation.mvpView.MediaMvpView;
+import com.leticia.pz_challenge_android.presentation.mvpView.IMediaMvpView;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by leticia on 12/2/17.
@@ -10,16 +13,17 @@ import com.leticia.pz_challenge_android.presentation.mvpView.MediaMvpView;
 public class MediaPresenter implements IMediaPresenter {
 
     private IAssetsRepository assetsRepository;
-    private MediaMvpView mvpView;
+    private IMediaMvpView mvpView;
 
-    public MediaPresenter(MediaMvpView mvpView, IAssetsRepository assetsRepository) {
+    public MediaPresenter(IMediaMvpView mvpView, IAssetsRepository assetsRepository) {
         this.mvpView = mvpView;
         this.assetsRepository = assetsRepository;
     }
 
     @Override
     public void loadAssetsList() {
-        assetsRepository.getAssetsObservable().subscribe(assets -> mvpView.showAssetsList(assets),
-                throwable -> mvpView.showErrorMessage(throwable.getMessage()));
+        assetsRepository.getAssetsObservable().subscribe((Assets assets) -> {
+            mvpView.showAssetsList(assets);
+        }, throwable -> mvpView.showErrorMessage(throwable.getMessage()));
     }
 }
