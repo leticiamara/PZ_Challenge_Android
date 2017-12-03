@@ -1,5 +1,6 @@
 package com.leticia.pz_challenge_android.presentation.view.adapter;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,9 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by leticia on 12/2/17.
  */
@@ -22,8 +26,10 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.AssetViewHol
 
     private List<MediaItem> mediaItems;
     private String assetsLocation;
+    private OnDownloadListener onDownloadListener;
 
-    public MediaAdapter() {
+    public MediaAdapter(OnDownloadListener onDownloadListener) {
+        this.onDownloadListener = onDownloadListener;
         mediaItems = new ArrayList<>();
     }
 
@@ -31,7 +37,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.AssetViewHol
     public AssetViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_media, parent, false);
-        return new AssetViewHolder(view);
+        return new AssetViewHolder(view, onDownloadListener);
     }
 
     @Override
@@ -55,23 +61,43 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.AssetViewHol
         notifyDataSetChanged();
     }
 
-    class AssetViewHolder extends RecyclerView.ViewHolder {
+    public MediaItem getMediaItem(int adapterPosition) {
+        return mediaItems.get(adapterPosition);
+    }
 
-        private TextView viewName;
-        private ImageView imageBackground;
+    public interface OnDownloadListener {
+        void onDownloadClicked(int adapterPosition);
+    }
 
-        AssetViewHolder(View itemView) {
+    class AssetViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        @BindView(R.id.txt_name)
+        TextView viewName;
+        @BindView(R.id.image_background)
+        ImageView imageBackground;
+        @BindView(R.id.btn_download)
+        FloatingActionButton btnDownload;
+
+        private final OnDownloadListener onDownloadListener;
+
+        AssetViewHolder(View itemView, OnDownloadListener onDownloadListener) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
 
-            viewName = itemView.findViewById(R.id.txt_name);
-            imageBackground = itemView.findViewById(R.id.image_background);
+            this.onDownloadListener = onDownloadListener;
+            btnDownload.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            onDownloadListener.onDownloadClicked(getAdapterPosition());
         }
 
         TextView getViewName() {
             return viewName;
         }
 
-        public ImageView getImageBackground() {
+        ImageView getImageBackground() {
             return imageBackground;
         }
     }

@@ -1,6 +1,7 @@
 package com.leticia.pz_challenge_android.presentation.view.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,8 +22,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements IMediaMvpView {
+public class MainActivity extends AppCompatActivity implements IMediaMvpView, MediaAdapter.OnDownloadListener {
 
+    public static final String VIDEO_PATH = "VIDEO_PATH";
     @BindView(R.id.media_list)
     RecyclerView mediaList;
     private MediaAdapter mediaAdapter;
@@ -62,6 +64,18 @@ public class MainActivity extends AppCompatActivity implements IMediaMvpView {
         return null;
     }
 
+    @Override
+    public void showVideoScreen(String path) {
+        Intent intent = new Intent(this, PlayerActivity.class);
+        intent.putExtra(VIDEO_PATH, path);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onDownloadClicked(int adapterPosition) {
+        presenter.downloadData(mediaAdapter.getMediaItem(adapterPosition));
+    }
+
     private void setupDependenceInjection() {
         DaggerMediaComponent
                 .builder()
@@ -75,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements IMediaMvpView {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mediaList.setLayoutManager(layoutManager);
 
-        mediaAdapter = new MediaAdapter();
+        mediaAdapter = new MediaAdapter(this);
         mediaList.setAdapter(mediaAdapter);
     }
 }

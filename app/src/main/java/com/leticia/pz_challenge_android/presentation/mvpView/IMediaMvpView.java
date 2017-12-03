@@ -4,7 +4,6 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import com.leticia.pz_challenge_android.domain.model.Assets;
-import com.squareup.picasso.Target;
 
 /**
  * Created by leticia on 12/2/17.
@@ -18,4 +17,6 @@ public interface IMediaMvpView {
     Context getContext();
 
     ImageView getMediaImageView();
+
+    void showVideoScreen(String path);
 }
