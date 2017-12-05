@@ -9,5 +9,5 @@ import com.leticia.pz_challenge_android.domain.model.MediaItem;
 public interface IMediaPresenter {
     void loadAssetsList();
 
-    void downloadData(MediaItem mediaItem);
+    void downloadData(MediaItem mediaItem, int position);
 }

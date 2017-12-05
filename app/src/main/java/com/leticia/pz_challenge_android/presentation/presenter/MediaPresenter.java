@@ -42,21 +42,46 @@ public class MediaPresenter implements IMediaPresenter {
     }
 
     @Override
-    public void downloadData(MediaItem mediaItem) {
-        assetsRepository.getDownloadFileObservable(sharedPreferencesManager.getAssetsLocation()
-                + FileUtil.SEPARATOR + mediaItem.getVideoBackground())
-                .flatMap(processResponse(mediaItem.getVideoBackground()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(file -> {
-                            //Log.d("test", "File downloaded to " + ((File) o).getAbsolutePath());
-                            mvpView.showVideoScreen(((File) file).getAbsolutePath());
-                        },
-                        throwable -> mvpView.showErrorMessage(throwable.getMessage()));
+    public void downloadData(MediaItem mediaItem, int position) {
+        mvpView.startProgress();
+        Observable<Object> videoObservable = getVideoObservable(mediaItem, position);
+        Observable<Object> audioObservable = getAudioObservable(mediaItem, position);
+
+        Observable.concat(videoObservable, audioObservable).subscribe(o -> {},
+                throwable -> mvpView.showErrorMessage(throwable.getMessage()), () -> {
+            mvpView.finishProgress();
+            mvpView.showVideoScreen(mediaItem.getVideoStoredPath(), mediaItem.getAudioStorePath());
+        });
     }
 
-    private Function<ResponseBody, ObservableSource<?>> processResponse(String videoBackground) {
-        return responseBody -> saveFileToDisk(responseBody, videoBackground);
+    private Observable<Object> getAudioObservable(MediaItem mediaItem, int position) {
+        return assetsRepository.getDownloadFileObservable(sharedPreferencesManager.getAssetsLocation()
+                    + FileUtil.SEPARATOR + mediaItem.getAudio())
+                    .flatMap(saveMediaToDisk(mediaItem.getAudio()))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(file -> {
+                        String audioPath = ((File) file).getAbsolutePath();
+                        mvpView.updateAudioPath(audioPath, position);
+                        mediaItem.setAudioStorePath(audioPath);
+                    });
+    }
+
+    private Observable<Object> getVideoObservable(MediaItem mediaItem, int position) {
+        return assetsRepository.getDownloadFileObservable(sharedPreferencesManager.getAssetsLocation()
+                    + FileUtil.SEPARATOR + mediaItem.getVideoBackground())
+                    .flatMap(saveMediaToDisk(mediaItem.getVideoBackground()))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(file -> {
+                        String videoPath = ((File) file).getAbsolutePath();
+                        mvpView.updateVideoPath(videoPath, position);
+                        mediaItem.setVideoStoredPath(videoPath);
+                    });
+    }
+
+    private Function<ResponseBody, ObservableSource<?>> saveMediaToDisk(String mediaName) {
+        return responseBody -> saveFileToDisk(responseBody, mediaName);
     }
 
     private Observable<File> saveFileToDisk(final ResponseBody responseBody, String videoBackground) {

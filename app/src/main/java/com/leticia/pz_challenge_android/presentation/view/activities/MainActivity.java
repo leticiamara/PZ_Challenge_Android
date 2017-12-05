@@ -24,7 +24,8 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements IMediaMvpView, MediaAdapter.OnDownloadListener {
 
-    public static final String VIDEO_PATH = "VIDEO_PATH";
+    public static final String VIDEO_PATH = "video-path";
+    public static final String AUDIO_PATH = "audio-path";
     @BindView(R.id.media_list)
     RecyclerView mediaList;
     private MediaAdapter mediaAdapter;
@@ -65,15 +66,36 @@ public class MainActivity extends AppCompatActivity implements IMediaMvpView, Me
     }
 
     @Override
-    public void showVideoScreen(String path) {
+    public void showVideoScreen(String videoPath, String audioPath) {
         Intent intent = new Intent(this, PlayerActivity.class);
-        intent.putExtra(VIDEO_PATH, path);
+        intent.putExtra(VIDEO_PATH, videoPath);
+        intent.putExtra(AUDIO_PATH, audioPath);
         startActivity(intent);
     }
 
     @Override
+    public void updateVideoPath(String absolutePath, int position) {
+        mediaAdapter.updateVideoPath(absolutePath, position);
+    }
+
+    @Override
+    public void updateAudioPath(String audioPath, int position) {
+        mediaAdapter.updateAudioPath(audioPath, position);
+    }
+
+    @Override
+    public void startProgress() {
+
+    }
+
+    @Override
+    public void finishProgress() {
+
+    }
+
+    @Override
     public void onDownloadClicked(int adapterPosition) {
-        presenter.downloadData(mediaAdapter.getMediaItem(adapterPosition));
+        presenter.downloadData(mediaAdapter.getMediaItem(adapterPosition), adapterPosition);
     }
 
     private void setupDependenceInjection() {

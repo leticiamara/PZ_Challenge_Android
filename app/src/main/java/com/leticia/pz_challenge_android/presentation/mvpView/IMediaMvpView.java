@@ -18,5 +18,13 @@ public interface IMediaMvpView {
 
     ImageView getMediaImageView();
 
-    void showVideoScreen(String path);
+    void showVideoScreen(String videoPath, String audioPath);
+
+    void updateVideoPath(String videoPath, int position);
+
+    void updateAudioPath(String audioPath, int position);
+
+    void startProgress();
+
+    void finishProgress();
 }

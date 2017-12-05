@@ -19,6 +19,8 @@ public class MediaItem {
     private String audio;
     @SerializedName("txts")
     private List<TextItem> textItems;
+    private String videoStoredPath;
+    private String audioStorePath;
 
     public String getName() {
         return name;
@@ -58,5 +60,21 @@ public class MediaItem {
 
     public void setTextItems(List<TextItem> textItems) {
         this.textItems = textItems;
+    }
+
+    public String getVideoStoredPath() {
+        return videoStoredPath;
+    }
+
+    public void setVideoStoredPath(String videoStoredPath) {
+        this.videoStoredPath = videoStoredPath;
+    }
+
+    public String getAudioStorePath() {
+        return audioStorePath;
+    }
+
+    public void setAudioStorePath(String audioStorePath) {
+        this.audioStorePath = audioStorePath;
     }
 }

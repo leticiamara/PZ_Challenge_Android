@@ -1,5 +1,6 @@
 package com.leticia.pz_challenge_android.presentation.view.adapter;
 
+import android.content.res.ColorStateList;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -65,6 +66,16 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.AssetViewHol
         return mediaItems.get(adapterPosition);
     }
 
+    public void updateVideoPath(String videoPath, int position) {
+        mediaItems.get(position).setVideoStoredPath(videoPath);
+        notifyItemChanged(position);
+    }
+
+    public void updateAudioPath(String audioPath, int position) {
+        mediaItems.get(position).setAudioStorePath(audioPath);
+        notifyItemChanged(position);
+    }
+
     public interface OnDownloadListener {
         void onDownloadClicked(int adapterPosition);
     }
@@ -91,6 +102,8 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.AssetViewHol
         @Override
         public void onClick(View view) {
             onDownloadListener.onDownloadClicked(getAdapterPosition());
+            btnDownload.setClickable(false);
+            btnDownload.setBackgroundTintList(ColorStateList.valueOf(view.getResources().getColor(R.color.colorButtonDisabled)));
         }
 
         TextView getViewName() {
