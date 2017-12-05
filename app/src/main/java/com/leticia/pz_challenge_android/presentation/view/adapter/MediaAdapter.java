@@ -1,54 +1,54 @@
 package com.leticia.pz_challenge_android.presentation.view.adapter;
 
-import android.content.res.ColorStateList;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.leticia.pz_challenge_android.R;
+import com.leticia.pz_challenge_android.domain.model.DownloadStatus;
 import com.leticia.pz_challenge_android.domain.model.MediaItem;
+import com.leticia.pz_challenge_android.presentation.view.viewholder.MediaViewHolder;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by leticia on 12/2/17.
  */
 
-public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.AssetViewHolder> {
+public class MediaAdapter extends RecyclerView.Adapter<MediaViewHolder> {
 
     private List<MediaItem> mediaItems;
     private String assetsLocation;
-    private OnDownloadListener onDownloadListener;
+    private OnDownloadClickedListener onDownloadClickedListener;
 
-    public MediaAdapter(OnDownloadListener onDownloadListener) {
-        this.onDownloadListener = onDownloadListener;
+    public MediaAdapter(OnDownloadClickedListener onDownloadClickedListener) {
+        this.onDownloadClickedListener = onDownloadClickedListener;
         mediaItems = new ArrayList<>();
     }
 
     @Override
-    public AssetViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MediaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_media, parent, false);
-        return new AssetViewHolder(view, onDownloadListener);
+        return new MediaViewHolder(view, onDownloadClickedListener);
     }
 
     @Override
-    public void onBindViewHolder(AssetViewHolder holder, int position) {
+    public void onBindViewHolder(MediaViewHolder holder, int position) {
         MediaItem mediaItem = mediaItems.get(position);
         holder.getViewName().setText(mediaItem.getName());
-
-        Picasso.with(holder.itemView.getContext())
-                .load(assetsLocation + "/" + mediaItem.getImage())
-                .into(holder.getImageBackground());
+        if (mediaItem.getDownloadStatus() != null) {
+            if (mediaItem.getDownloadStatus() == DownloadStatus.COMPLETED) {
+                holder.onDownloadFinishedWithSuccess();
+            } else {
+                holder.onDownloadFinishedWithError();
+            }
+        }
+        changeBtnIconIfIsPlay(holder, mediaItem);
+        loadMediaThumbnail(holder, mediaItem);
     }
 
     @Override
@@ -76,42 +76,36 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.AssetViewHol
         notifyItemChanged(position);
     }
 
-    public interface OnDownloadListener {
-        void onDownloadClicked(int adapterPosition);
+    public void updateDownloadStatus(DownloadStatus downloadStatus, int position) {
+        mediaItems.get(position).setDownloadStatus(downloadStatus);
+        notifyItemChanged(position);
     }
 
-    class AssetViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        @BindView(R.id.txt_name)
-        TextView viewName;
-        @BindView(R.id.image_background)
-        ImageView imageBackground;
-        @BindView(R.id.btn_download)
-        FloatingActionButton btnDownload;
-
-        private final OnDownloadListener onDownloadListener;
-
-        AssetViewHolder(View itemView, OnDownloadListener onDownloadListener) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-
-            this.onDownloadListener = onDownloadListener;
-            btnDownload.setOnClickListener(this);
+    private void changeBtnIconIfIsPlay(MediaViewHolder holder, MediaItem mediaItem) {
+        if (mediaItem.getVideoStoredPath() != null && mediaItem.getAudioStorePath() != null) {
+            holder.getmBtnDownload().setImageDrawable(holder.itemView.getResources()
+                    .getDrawable(R.drawable.ic_play_arrow_white_24dp));
+            holder.setIsPlay(true);
+        } else {
+            holder.getmBtnDownload().setImageDrawable(holder.itemView.getResources()
+                    .getDrawable(R.drawable.ic_file_download_white_24dp));
+            holder.setIsPlay(false);
         }
+    }
 
-        @Override
-        public void onClick(View view) {
-            onDownloadListener.onDownloadClicked(getAdapterPosition());
-            btnDownload.setClickable(false);
-            btnDownload.setBackgroundTintList(ColorStateList.valueOf(view.getResources().getColor(R.color.colorButtonDisabled)));
-        }
+    private void loadMediaThumbnail(MediaViewHolder holder, MediaItem mediaItem) {
+        Picasso.with(holder.itemView.getContext())
+                .load(assetsLocation + "/" + mediaItem.getImage())
+                .into(holder.getImageBackground());
+    }
 
-        TextView getViewName() {
-            return viewName;
-        }
+    public interface OnDownloadClickedListener {
+        void onDownloadClicked(int adapterPosition, boolean isPlay);
+    }
 
-        ImageView getImageBackground() {
-            return imageBackground;
-        }
+    public interface OnDownloadFinishedListener {
+        void onDownloadFinishedWithSuccess();
+
+        void onDownloadFinishedWithError();
     }
 }

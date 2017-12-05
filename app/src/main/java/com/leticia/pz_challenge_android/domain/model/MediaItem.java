@@ -19,8 +19,10 @@ public class MediaItem {
     private String audio;
     @SerializedName("txts")
     private List<TextItem> textItems;
+
     private String videoStoredPath;
     private String audioStorePath;
+    private DownloadStatus downloadStatus;
 
     public String getName() {
         return name;
@@ -76,5 +78,13 @@ public class MediaItem {
 
     public void setAudioStorePath(String audioStorePath) {
         this.audioStorePath = audioStorePath;
+    }
+
+    public DownloadStatus getDownloadStatus() {
+        return downloadStatus;
+    }
+
+    public void setDownloadStatus(DownloadStatus downloadStatus) {
+        this.downloadStatus = downloadStatus;
     }
 }

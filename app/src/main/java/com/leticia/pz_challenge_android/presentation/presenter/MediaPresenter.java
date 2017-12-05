@@ -43,13 +43,12 @@ public class MediaPresenter implements IMediaPresenter {
 
     @Override
     public void downloadData(MediaItem mediaItem, int position) {
-        mvpView.startProgress();
         Observable<Object> videoObservable = getVideoObservable(mediaItem, position);
         Observable<Object> audioObservable = getAudioObservable(mediaItem, position);
 
         Observable.concat(videoObservable, audioObservable).subscribe(o -> {},
                 throwable -> mvpView.showErrorMessage(throwable.getMessage()), () -> {
-            mvpView.finishProgress();
+            mvpView.finishProgress(false, position);
             mvpView.showVideoScreen(mediaItem.getVideoStoredPath(), mediaItem.getAudioStorePath());
         });
     }

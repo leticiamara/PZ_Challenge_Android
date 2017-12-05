@@ -24,7 +24,5 @@ public interface IMediaMvpView {
 
     void updateAudioPath(String audioPath, int position);
 
-    void startProgress();
-
-    void finishProgress();
+    void finishProgress(boolean error, int position);
 }
