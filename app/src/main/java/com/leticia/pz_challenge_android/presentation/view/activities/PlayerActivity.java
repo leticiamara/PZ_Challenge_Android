@@ -4,6 +4,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -29,6 +30,10 @@ public class PlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_player);
         ButterKnife.bind(this);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         if (getIntent() != null) {
             String videoPath = getIntent().getStringExtra(VIDEO_PATH);
             String audioPath = getIntent().getStringExtra(AUDIO_PATH);
@@ -43,6 +48,17 @@ public class PlayerActivity extends AppCompatActivity {
         mediaPlayer.stop();
         videoView.stopPlayback();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void startPlayAudio(String path){
