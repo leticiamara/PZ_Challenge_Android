@@ -12,11 +12,11 @@ public class MediaItem {
 
     private String name;
     @SerializedName("bg")
-    private String videoBackground;
+    private String videoBackgroundName;
     @SerializedName("im")
-    private String image;
+    private String imageName;
     @SerializedName("sg")
-    private String audio;
+    private String audioName;
     @SerializedName("txts")
     private List<TextItem> textItems;
 
@@ -32,28 +32,28 @@ public class MediaItem {
         this.name = name;
     }
 
-    public String getVideoBackground() {
-        return videoBackground;
+    public String getVideoBackgroundName() {
+        return videoBackgroundName;
     }
 
-    public void setVideoBackground(String videoBackground) {
-        this.videoBackground = videoBackground;
+    public void setVideoBackgroundName(String videoBackgroundName) {
+        this.videoBackgroundName = videoBackgroundName;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageName() {
+        return imageName;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
-    public String getAudio() {
-        return audio;
+    public String getAudioName() {
+        return audioName;
     }
 
-    public void setAudio(String audio) {
-        this.audio = audio;
+    public void setAudioName(String audioName) {
+        this.audioName = audioName;
     }
 
     public List<TextItem> getTextItems() {

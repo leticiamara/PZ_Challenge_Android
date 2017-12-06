@@ -24,6 +24,8 @@ import com.leticia.pz_challenge_android.presentation.mvpView.IMediaMvpView;
 import com.leticia.pz_challenge_android.presentation.presenter.IMediaPresenter;
 import com.leticia.pz_challenge_android.presentation.view.adapter.MediaAdapter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -58,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements IMediaMvpView,
 
     @Override
     public void showAssetsList(Assets assets) {
-        mediaAdapter.setAssetList(assets.getMediaItems(), assets.getAssetsLocation());
+        List<MediaItem> mediaItems = presenter.fillMediaPathIfIsAlreadyDownloaded(assets.getMediaItems());
+        mediaAdapter.setAssetList(mediaItems, assets.getAssetsLocation());
     }
 
     @Override

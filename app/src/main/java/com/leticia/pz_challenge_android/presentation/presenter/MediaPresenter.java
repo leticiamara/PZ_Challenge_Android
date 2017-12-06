@@ -9,6 +9,7 @@ import com.leticia.pz_challenge_android.presentation.mvpView.IMediaMvpView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -54,10 +55,19 @@ public class MediaPresenter implements IMediaPresenter {
         });
     }
 
+    @Override
+    public List<MediaItem> fillMediaPathIfIsAlreadyDownloaded(List<MediaItem> mediaItems) {
+        for (MediaItem mediaItem : mediaItems) {
+            mediaItem.setVideoStoredPath(FileUtil.getFilePath(mediaItem.getVideoBackgroundName()));
+            mediaItem.setAudioStorePath(FileUtil.getFilePath(mediaItem.getAudioName()));
+        }
+        return mediaItems;
+    }
+
     private Observable<Object> getAudioObservable(MediaItem mediaItem, int position) {
         return assetsRepository.getDownloadFileObservable(sharedPreferencesManager.getAssetsLocation()
-                    + FileUtil.SEPARATOR + mediaItem.getAudio())
-                    .flatMap(saveMediaToDisk(mediaItem.getAudio()))
+                    + FileUtil.SEPARATOR + mediaItem.getAudioName())
+                    .flatMap(saveMediaToDisk(mediaItem.getAudioName()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(file -> {
@@ -69,8 +79,8 @@ public class MediaPresenter implements IMediaPresenter {
 
     private Observable<Object> getVideoObservable(MediaItem mediaItem, int position) {
         return assetsRepository.getDownloadFileObservable(sharedPreferencesManager.getAssetsLocation()
-                    + FileUtil.SEPARATOR + mediaItem.getVideoBackground())
-                    .flatMap(saveMediaToDisk(mediaItem.getVideoBackground()))
+                    + FileUtil.SEPARATOR + mediaItem.getVideoBackgroundName())
+                    .flatMap(saveMediaToDisk(mediaItem.getVideoBackgroundName()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(file -> {

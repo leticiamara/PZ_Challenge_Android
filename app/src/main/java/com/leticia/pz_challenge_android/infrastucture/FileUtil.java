@@ -34,4 +34,9 @@ public class FileUtil {
         bufferedSink.close();
         return destinationFile;
     }
+
+    public static String getFilePath(String fileName) {
+        File destinationFile = new File(getMediaFolder(), fileName);
+        return destinationFile.exists() ? destinationFile.getPath() : "";
+    }
 }

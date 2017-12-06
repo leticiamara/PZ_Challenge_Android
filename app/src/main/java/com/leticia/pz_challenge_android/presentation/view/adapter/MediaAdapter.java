@@ -84,7 +84,8 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaViewHolder> {
     }
 
     private void changeBtnIconIfIsPlay(MediaViewHolder holder, MediaItem mediaItem) {
-        if (mediaItem.getVideoStoredPath() != null && mediaItem.getAudioStorePath() != null) {
+        if (mediaItem.getVideoStoredPath() != null && mediaItem.getAudioStorePath() != null
+                && !mediaItem.getVideoStoredPath().isEmpty() && !mediaItem.getAudioStorePath().isEmpty()) {
             holder.getmBtnDownload().setImageDrawable(holder.itemView.getResources()
                     .getDrawable(R.drawable.ic_play_arrow_white_24dp));
             holder.setIsPlay(true);
@@ -97,7 +98,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaViewHolder> {
 
     private void loadMediaThumbnail(MediaViewHolder holder, MediaItem mediaItem) {
         Picasso.with(holder.itemView.getContext())
-                .load(assetsLocation + "/" + mediaItem.getImage())
+                .load(assetsLocation + "/" + mediaItem.getImageName())
                 .into(holder.getImageBackground());
     }
 
