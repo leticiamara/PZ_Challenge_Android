@@ -10,7 +10,6 @@
         android:id="@+id/media_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:background="#F3F2F8"/>
+        android:scrollbars="vertical" />
 
 </android.support.constraint.ConstraintLayout>

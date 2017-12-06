@@ -157,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements IMediaMvpView,
         mediaList.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mediaList.setLayoutManager(layoutManager);
-
         mediaAdapter = new MediaAdapter(this);
         mediaList.setAdapter(mediaAdapter);
     }
