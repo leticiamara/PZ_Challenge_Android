@@ -11,7 +11,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leticia.pz_challenge_android.R;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements IMediaMvpView,
     private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 9991;
     @BindView(R.id.media_list)
     RecyclerView mediaList;
+    @BindView(R.id.text_no_internet_connection)
+    TextView textNoInternetConnection;
     private MediaAdapter mediaAdapter;
 
     @Inject
@@ -108,6 +112,15 @@ public class MainActivity extends AppCompatActivity implements IMediaMvpView,
             mediaAdapter.updateDownloadStatus(DownloadStatus.ERROR, position);
         } else {
             mediaAdapter.updateDownloadStatus(DownloadStatus.COMPLETED, position);
+        }
+    }
+
+    @Override
+    public void setVisibilityNetworkErrorText(boolean visible) {
+        if (visible) {
+            textNoInternetConnection.setVisibility(View.VISIBLE);
+        } else {
+            textNoInternetConnection.setVisibility(View.GONE);
         }
     }
 

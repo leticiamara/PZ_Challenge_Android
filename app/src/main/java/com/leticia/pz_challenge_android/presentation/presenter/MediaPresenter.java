@@ -1,9 +1,11 @@
 package com.leticia.pz_challenge_android.presentation.presenter;
 
+import com.leticia.pz_challenge_android.R;
 import com.leticia.pz_challenge_android.domain.model.Assets;
 import com.leticia.pz_challenge_android.domain.model.MediaItem;
 import com.leticia.pz_challenge_android.domain.repository.IAssetsRepository;
 import com.leticia.pz_challenge_android.infrastucture.FileUtil;
+import com.leticia.pz_challenge_android.infrastucture.NetworkUtil;
 import com.leticia.pz_challenge_android.infrastucture.SharedPreferencesManager;
 import com.leticia.pz_challenge_android.presentation.mvpView.IMediaMvpView;
 
@@ -36,23 +38,33 @@ public class MediaPresenter implements IMediaPresenter {
 
     @Override
     public void loadAssetsList() {
-        assetsRepository.getAssetsObservable().subscribe((Assets assets) -> {
-            mvpView.showAssetsList(assets);
-            sharedPreferencesManager.saveAssetsLocation(assets.getAssetsLocation());
-        }, throwable -> mvpView.showErrorMessage(throwable.getMessage()));
+        if (NetworkUtil.isNetworkAvailable(mvpView.getContext())) {
+            mvpView.setVisibilityNetworkErrorText(false);
+            assetsRepository.getAssetsObservable().subscribe((Assets assets) -> {
+                mvpView.showAssetsList(assets);
+                sharedPreferencesManager.saveAssetsLocation(assets.getAssetsLocation());
+            }, throwable -> mvpView.showErrorMessage(throwable.getMessage()));
+        } else {
+            mvpView.setVisibilityNetworkErrorText(true);
+        }
     }
 
     @Override
     public void downloadData(MediaItem mediaItem, int position) {
-        mvpView.startProgress(position);
-        Observable<Object> videoObservable = getVideoObservable(mediaItem, position);
-        Observable<Object> audioObservable = getAudioObservable(mediaItem, position);
+        if (NetworkUtil.isNetworkAvailable(mvpView.getContext())) {
+            mvpView.startProgress(position);
+            Observable<Object> videoObservable = getVideoObservable(mediaItem, position);
+            Observable<Object> audioObservable = getAudioObservable(mediaItem, position);
 
-        Observable.concat(videoObservable, audioObservable).subscribe(o -> {},
-                throwable -> mvpView.showErrorMessage(throwable.getMessage()), () -> {
-            mvpView.finishProgress(false, position);
-            mvpView.showVideoScreen(mediaItem.getVideoStoredPath(), mediaItem.getAudioStorePath());
-        });
+            Observable.concat(videoObservable, audioObservable).subscribe(o -> {
+                    },
+                    throwable -> mvpView.showErrorMessage(throwable.getMessage()), () -> {
+                        mvpView.finishProgress(false, position);
+                        mvpView.showVideoScreen(mediaItem.getVideoStoredPath(), mediaItem.getAudioStorePath());
+                    });
+        } else {
+            mvpView.showErrorMessage(mvpView.getContext().getString(R.string.no_internet_connection));
+        }
     }
 
     @Override

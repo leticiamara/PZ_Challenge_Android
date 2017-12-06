@@ -7,4 +7,5 @@
     <color name="colorBackgroundListItem">#FFFFFF</color>
     <color name="colorTextMedia">#272727</color>
     <color name="colorDivider">#DDDDDD</color>
+    <color name="colorSecondaryText">#9B9B9B</color>
 </resources>

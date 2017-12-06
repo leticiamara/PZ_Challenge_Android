@@ -27,4 +27,6 @@ public interface IMediaMvpView {
     void startProgress(int position);
 
     void finishProgress(boolean error, int position);
+
+    void setVisibilityNetworkErrorText(boolean visible);
 }
