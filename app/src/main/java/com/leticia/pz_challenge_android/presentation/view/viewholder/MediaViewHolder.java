@@ -17,8 +17,7 @@ import butterknife.ButterKnife;
  * Created by leticia on 12/5/17.
  */
 
-public class MediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-        MediaAdapter.OnDownloadFinishedListener {
+public class MediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     @BindView(R.id.txt_name)
     TextView viewName;
@@ -42,20 +41,23 @@ public class MediaViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     @Override
     public void onClick(View view) {
-        onDownloadClickedListener.onDownloadClicked(getAdapterPosition(), isPlay);
-        if (!isPlay) {
-            mProgressDownload.setVisibility(View.VISIBLE);
-            mBtnDownload.setEnabled(false);
+        if (isPlay) {
+            onDownloadClickedListener.onPlayClicked(getAdapterPosition());
+        } else {
+            onDownloadClickedListener.onDownloadClicked(getAdapterPosition());
         }
     }
 
-    @Override
+    public void onDownloadStarted() {
+        mProgressDownload.setVisibility(View.VISIBLE);
+        mBtnDownload.setEnabled(false);
+    }
+
     public void onDownloadFinishedWithSuccess() {
         mProgressDownload.setVisibility(View.INVISIBLE);
         mBtnDownload.setEnabled(true);
     }
 
-    @Override
     public void onDownloadFinishedWithError() {
         mProgressDownload.setVisibility(View.INVISIBLE);
         mBtnDownload.setEnabled(true);
@@ -77,7 +79,4 @@ public class MediaViewHolder extends RecyclerView.ViewHolder implements View.OnC
         this.isPlay = isPlay;
     }
 
-    public boolean isPlay() {
-        return isPlay;
-    }
 }

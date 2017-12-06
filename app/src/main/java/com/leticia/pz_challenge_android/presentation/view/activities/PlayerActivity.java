@@ -45,14 +45,6 @@ public class PlayerActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void setupVideoView(Uri uri) {
-        videoView.setMediaController(new MediaController(this));
-        videoView.setVideoURI(uri);
-        videoView.requestFocus();
-        videoView.setOnPreparedListener(mp -> mp.setLooping(true));
-        videoView.start();
-    }
-
     public void startPlayAudio(String path){
         mediaPlayer = new MediaPlayer();
         try {
@@ -70,5 +62,13 @@ public class PlayerActivity extends AppCompatActivity {
             videoView.stopPlayback();
             finish();
         });
+    }
+
+    private void setupVideoView(Uri uri) {
+        videoView.setMediaController(new MediaController(this));
+        videoView.setVideoURI(uri);
+        videoView.requestFocus();
+        videoView.setOnPreparedListener(mp -> mp.setLooping(true));
+        videoView.start();
     }
 }

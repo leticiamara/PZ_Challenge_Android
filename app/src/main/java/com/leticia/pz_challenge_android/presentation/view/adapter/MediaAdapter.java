@@ -41,7 +41,9 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaViewHolder> {
         MediaItem mediaItem = mediaItems.get(position);
         holder.getViewName().setText(mediaItem.getName());
         if (mediaItem.getDownloadStatus() != null) {
-            if (mediaItem.getDownloadStatus() == DownloadStatus.COMPLETED) {
+            if (mediaItem.getDownloadStatus() == DownloadStatus.STARTED) {
+                holder.onDownloadStarted();
+            } else if (mediaItem.getDownloadStatus() == DownloadStatus.COMPLETED) {
                 holder.onDownloadFinishedWithSuccess();
             } else {
                 holder.onDownloadFinishedWithError();
@@ -100,12 +102,8 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaViewHolder> {
     }
 
     public interface OnDownloadClickedListener {
-        void onDownloadClicked(int adapterPosition, boolean isPlay);
-    }
+        void onDownloadClicked(int adapterPosition);
 
-    public interface OnDownloadFinishedListener {
-        void onDownloadFinishedWithSuccess();
-
-        void onDownloadFinishedWithError();
+        void onPlayClicked(int adapterPosition);
     }
 }

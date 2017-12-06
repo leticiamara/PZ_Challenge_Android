@@ -5,5 +5,5 @@ package com.leticia.pz_challenge_android.domain.model;
  */
 
 public enum DownloadStatus {
-    COMPLETED, ERROR
+    STARTED, COMPLETED, ERROR
 }
